@@ -1,4 +1,10 @@
-import type { Divida, DividaRow, DividaStatus } from "../types/divida";
+import type {
+  Divida,
+  DividaRow,
+  DividaStatus,
+  FiltroTipo,
+  Ordenacao,
+} from "../types/divida";
 
 export function todayMidnight(): Date {
   const t = new Date();
@@ -109,4 +115,69 @@ export function cmpVenc(a: Divida, b: Divida): number {
   if (!a.venc) return 1;
   if (!b.venc) return -1;
   return a.venc.localeCompare(b.venc);
+}
+
+const URGENCY: Record<DividaStatus, number> = {
+  atrasado: 0,
+  "vence-hoje": 1,
+  "essa-semana": 2,
+  proximo: 3,
+  pago: 4,
+};
+
+export function statusUrgencyRank(status: DividaStatus): number {
+  return URGENCY[status];
+}
+
+export function cmpDividaOrdenacao(
+  a: Divida,
+  b: Divida,
+  ordenacao: Ordenacao
+): number {
+  if (a.pago !== b.pago) return a.pago ? 1 : -1;
+  switch (ordenacao) {
+    case "venc_asc":
+      return cmpVenc(a, b);
+    case "venc_desc":
+      return cmpVenc(b, a);
+    case "valor_asc":
+      return a.valor - b.valor;
+    case "valor_desc":
+      return b.valor - a.valor;
+    case "urgencia": {
+      const r =
+        statusUrgencyRank(computeStatus(a)) - statusUrgencyRank(computeStatus(b));
+      return r !== 0 ? r : cmpVenc(a, b);
+    }
+    default:
+      return cmpVenc(a, b);
+  }
+}
+
+export function sortDividasLista(list: Divida[], ordenacao: Ordenacao): Divida[] {
+  return list.slice().sort((a, b) => cmpDividaOrdenacao(a, b, ordenacao));
+}
+
+export function filtrarBusca(dividas: Divida[], busca: string): Divida[] {
+  const q = busca.trim().toLowerCase();
+  if (!q) return dividas.slice();
+  return dividas.filter(
+    (d) =>
+      d.desc.toLowerCase().includes(q) || d.cat.toLowerCase().includes(q)
+  );
+}
+
+export function filtrarPorFiltro(
+  dividas: Divida[],
+  filtroAtivo: FiltroTipo
+): Divida[] {
+  if (filtroAtivo === "todos") return dividas.slice();
+  if (filtroAtivo === "pago") return dividas.filter((d) => d.pago);
+  return dividas.filter((d) => {
+    if (d.pago) return false;
+    const s = computeStatus(d);
+    if (filtroAtivo === "essa-semana")
+      return s === "essa-semana" || s === "vence-hoje";
+    return s === filtroAtivo;
+  });
 }

@@ -7,6 +7,13 @@ export type DividaStatus =
 
 export type FiltroTipo = "todos" | "atrasado" | "essa-semana" | "proximo" | "pago";
 
+export type Ordenacao =
+  | "venc_asc"
+  | "venc_desc"
+  | "valor_asc"
+  | "valor_desc"
+  | "urgencia";
+
 export interface Divida {
   id: string;
   desc: string;

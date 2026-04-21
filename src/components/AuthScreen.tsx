@@ -1,3 +1,4 @@
+import { Link, useLocation } from "react-router-dom";
 import { useState, type KeyboardEvent } from "react";
 
 interface AuthScreenProps {
@@ -5,10 +6,10 @@ interface AuthScreenProps {
   onSignUp: (email: string, password: string) => Promise<{ error: string | null; info?: string }>;
 }
 
-type AuthView = "login" | "cadastro";
-
 export function AuthScreen({ onSignIn, onSignUp }: AuthScreenProps) {
-  const [view, setView] = useState<AuthView>("login");
+  const location = useLocation();
+  const isCadastro = location.pathname === "/cadastro";
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [authMsg, setAuthMsg] = useState("");
@@ -17,16 +18,6 @@ export function AuthScreen({ onSignIn, onSignUp }: AuthScreenProps) {
   function clearFeedback() {
     setAuthMsg("");
     setMsgIsInfo(false);
-  }
-
-  function irParaLogin() {
-    clearFeedback();
-    setView("login");
-  }
-
-  function irParaCadastro() {
-    clearFeedback();
-    setView("cadastro");
   }
 
   async function handleEntrar() {
@@ -62,8 +53,8 @@ export function AuthScreen({ onSignIn, onSignUp }: AuthScreenProps) {
 
   function onPassKeyDown(e: KeyboardEvent<HTMLInputElement>) {
     if (e.key !== "Enter") return;
-    if (view === "login") void handleEntrar();
-    else void handleCriarConta();
+    if (isCadastro) void handleCriarConta();
+    else void handleEntrar();
   }
 
   return (
@@ -71,7 +62,7 @@ export function AuthScreen({ onSignIn, onSignUp }: AuthScreenProps) {
       <div className="auth-card">
         <h1 className="auth-title">💰 Controle de Dívidas</h1>
 
-        {view === "login" ? (
+        {!isCadastro ? (
           <>
             <h2 className="auth-screen-title">Entrar</h2>
             <p className="auth-screen-sub">
@@ -117,16 +108,16 @@ export function AuthScreen({ onSignIn, onSignUp }: AuthScreenProps) {
             </div>
             <div className="auth-footer">
               Não tem conta?{" "}
-              <button type="button" className="auth-link" onClick={irParaCadastro}>
+              <Link to="/cadastro" className="auth-link">
                 Criar conta
-              </button>
+              </Link>
             </div>
           </>
         ) : (
           <>
-            <button type="button" className="auth-back" onClick={irParaLogin}>
+            <Link to="/login" className="auth-back">
               ← Voltar ao login
-            </button>
+            </Link>
             <h2 className="auth-screen-title">Criar conta</h2>
             <p className="auth-screen-sub">
               Use o <strong>mesmo e-mail e senha</strong> no celular e no computador. A senha precisa
@@ -172,9 +163,9 @@ export function AuthScreen({ onSignIn, onSignUp }: AuthScreenProps) {
             </div>
             <div className="auth-footer">
               Já tem conta?{" "}
-              <button type="button" className="auth-link" onClick={irParaLogin}>
+              <Link to="/login" className="auth-link">
                 Entrar
-              </button>
+              </Link>
             </div>
           </>
         )}

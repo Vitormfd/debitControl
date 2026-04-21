@@ -1,4 +1,6 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
+import { Navigate, Route, Routes } from "react-router-dom";
 import type { Session, SupabaseClient } from "@supabase/supabase-js";
 import { AuthScreen } from "./components/AuthScreen";
 import { Dashboard } from "./components/Dashboard";
@@ -19,6 +21,7 @@ function dataHojeLabel(): string {
 }
 
 export default function App() {
+  const queryClient = useQueryClient();
   const [banner, setBanner] = useState("");
   const [client, setClient] = useState<SupabaseClient | null>(null);
   const [session, setSession] = useState<Session | null>(null);
@@ -71,6 +74,7 @@ export default function App() {
 
   async function handleSignOut() {
     if (!client) return;
+    queryClient.removeQueries({ queryKey: ["dividas"] });
     await client.auth.signOut();
   }
 
@@ -92,17 +96,48 @@ export default function App() {
   return (
     <>
       <ErrorBanner message={banner} />
-      {!session ? (
-        <AuthScreen onSignIn={handleSignIn} onSignUp={handleSignUp} />
-      ) : (
-        <Dashboard
-          supabase={client}
-          onSignOut={handleSignOut}
-          subtitleHoje={subtitleHoje}
-          onLoadError={(msg) => setBanner(msg)}
-          onLoadStart={() => setBanner("")}
+      <Routes>
+        <Route
+          path="/login"
+          element={
+            session ? (
+              <Navigate to="/" replace />
+            ) : (
+              <AuthScreen onSignIn={handleSignIn} onSignUp={handleSignUp} />
+            )
+          }
         />
-      )}
+        <Route
+          path="/cadastro"
+          element={
+            session ? (
+              <Navigate to="/" replace />
+            ) : (
+              <AuthScreen onSignIn={handleSignIn} onSignUp={handleSignUp} />
+            )
+          }
+        />
+        <Route
+          path="/"
+          element={
+            session ? (
+              <Dashboard
+                supabase={client}
+                onSignOut={handleSignOut}
+                subtitleHoje={subtitleHoje}
+                onLoadError={(msg) => setBanner(msg)}
+                onLoadStart={() => setBanner("")}
+              />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+        <Route
+          path="*"
+          element={<Navigate to={session ? "/" : "/login"} replace />}
+        />
+      </Routes>
     </>
   );
 }

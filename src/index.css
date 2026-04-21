@@ -556,3 +556,216 @@ h1 {
 .btn-secondary:hover {
   background: #e0e0e0;
 }
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.list-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: flex-end;
+  margin-bottom: 16px;
+}
+
+.input-busca {
+  flex: 1;
+  min-width: 160px;
+  padding: 10px 12px;
+  border: 1.5px solid #ddd;
+  border-radius: 10px;
+  font-size: 14px;
+  font-family: Arial, sans-serif;
+}
+
+.input-busca:focus {
+  outline: none;
+  border-color: #3b1fa8;
+}
+
+.list-toolbar-sort {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.list-toolbar-sort label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #666;
+}
+
+.select-ordenacao {
+  padding: 10px 12px;
+  border: 1.5px solid #ddd;
+  border-radius: 10px;
+  font-size: 13px;
+  font-family: Arial, sans-serif;
+  min-width: 200px;
+  background: #fff;
+}
+
+.select-ordenacao:focus {
+  outline: none;
+  border-color: #3b1fa8;
+}
+
+.btn-editar {
+  background: #e3f2fd;
+  color: #1565c0;
+  border: 1.5px solid #90caf9;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.btn-editar:hover {
+  background: #bbdefb;
+}
+
+.toast-stack {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  left: 16px;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-end;
+  pointer-events: none;
+}
+
+.toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  max-width: 420px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.4;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+  border: 1px solid #e0e0e0;
+  background: #fff;
+}
+
+.toast--success {
+  border-color: #a5d6a7;
+  background: #e8f5e9;
+  color: #1b5e20;
+}
+
+.toast--error {
+  border-color: #ffcdd2;
+  background: #ffebee;
+  color: #b71c1c;
+}
+
+.toast--info {
+  border-color: #90caf9;
+  background: #e3f2fd;
+  color: #0d47a1;
+}
+
+.toast-msg {
+  flex: 1;
+  min-width: 0;
+}
+
+.toast-close {
+  background: none;
+  border: none;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  color: inherit;
+  opacity: 0.65;
+  padding: 0 0 0 4px;
+}
+
+.toast-close:hover {
+  opacity: 1;
+}
+
+.confirm-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.confirm-dialog {
+  background: #fff;
+  border-radius: 16px;
+  padding: 22px 24px;
+  width: 100%;
+  max-width: 400px;
+  border: 1px solid #e0e0e0;
+}
+
+.confirm-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 10px;
+}
+
+.confirm-msg {
+  font-size: 14px;
+  color: #555;
+  line-height: 1.45;
+  margin-bottom: 18px;
+}
+
+.confirm-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.confirm-actions .btn-cancelar,
+.confirm-actions .btn-salvar,
+.confirm-actions .btn-danger {
+  flex: 1;
+}
+
+.btn-danger {
+  background: #c62828;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-danger:hover {
+  background: #b71c1c;
+}
+
+a.auth-link {
+  text-decoration: underline;
+}
+
+a.auth-back {
+  text-decoration: underline;
+}
