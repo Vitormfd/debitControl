@@ -5,13 +5,32 @@ interface AuthScreenProps {
   onSignUp: (email: string, password: string) => Promise<{ error: string | null; info?: string }>;
 }
 
+type AuthView = "login" | "cadastro";
+
 export function AuthScreen({ onSignIn, onSignUp }: AuthScreenProps) {
+  const [view, setView] = useState<AuthView>("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [authMsg, setAuthMsg] = useState("");
+  const [msgIsInfo, setMsgIsInfo] = useState(false);
+
+  function clearFeedback() {
+    setAuthMsg("");
+    setMsgIsInfo(false);
+  }
+
+  function irParaLogin() {
+    clearFeedback();
+    setView("login");
+  }
+
+  function irParaCadastro() {
+    clearFeedback();
+    setView("cadastro");
+  }
 
   async function handleEntrar() {
-    setAuthMsg("");
+    clearFeedback();
     if (!email.trim() || !password) {
       setAuthMsg("Preencha e-mail e senha.");
       return;
@@ -20,8 +39,8 @@ export function AuthScreen({ onSignIn, onSignUp }: AuthScreenProps) {
     if (error) setAuthMsg(error);
   }
 
-  async function handleCriar() {
-    setAuthMsg("");
+  async function handleCriarConta() {
+    clearFeedback();
     if (!email.trim() || !password) {
       setAuthMsg("Preencha e-mail e senha.");
       return;
@@ -31,56 +50,134 @@ export function AuthScreen({ onSignIn, onSignUp }: AuthScreenProps) {
       return;
     }
     const { error, info } = await onSignUp(email.trim(), password);
-    if (error) setAuthMsg(error);
-    else if (info) setAuthMsg(info);
+    if (error) {
+      setAuthMsg(error);
+      return;
+    }
+    if (info) {
+      setAuthMsg(info);
+      setMsgIsInfo(true);
+    }
   }
 
   function onPassKeyDown(e: KeyboardEvent<HTMLInputElement>) {
-    if (e.key === "Enter") void handleEntrar();
+    if (e.key !== "Enter") return;
+    if (view === "login") void handleEntrar();
+    else void handleCriarConta();
   }
 
   return (
     <div className="auth-screen">
       <div className="auth-card">
         <h1 className="auth-title">💰 Controle de Dívidas</h1>
-        <p className="auth-hint">
-          Use o <strong>mesmo e-mail e senha</strong> no celular e no computador.
-          Os dados ficam no Supabase (nuvem).
-        </p>
-        <div className="form-group">
-          <label htmlFor="auth-email">E-mail</label>
-          <input
-            id="auth-email"
-            type="email"
-            autoComplete="username"
-            placeholder="seu@email.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="auth-pass">Senha</label>
-          <input
-            id="auth-pass"
-            type="password"
-            autoComplete="current-password"
-            placeholder="••••••••"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            onKeyDown={onPassKeyDown}
-          />
-        </div>
-        <p className="auth-msg" aria-live="polite">
-          {authMsg}
-        </p>
-        <div className="auth-actions">
-          <button type="button" className="btn-salvar" onClick={() => void handleEntrar()}>
-            Entrar
-          </button>
-          <button type="button" className="btn-secondary" onClick={() => void handleCriar()}>
-            Criar conta
-          </button>
-        </div>
+
+        {view === "login" ? (
+          <>
+            <h2 className="auth-screen-title">Entrar</h2>
+            <p className="auth-screen-sub">
+              Acesse com o e-mail e a senha da sua conta. Os dados ficam sincronizados no Supabase.
+            </p>
+            <div className="form-group">
+              <label htmlFor="auth-email-login">E-mail</label>
+              <input
+                id="auth-email-login"
+                type="email"
+                autoComplete="username"
+                placeholder="seu@email.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="auth-pass-login">Senha</label>
+              <input
+                id="auth-pass-login"
+                type="password"
+                autoComplete="current-password"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                onKeyDown={onPassKeyDown}
+              />
+            </div>
+            <p
+              className={`auth-msg${msgIsInfo ? " info" : ""}`}
+              aria-live="polite"
+            >
+              {authMsg}
+            </p>
+            <div className="auth-primary-wrap">
+              <button
+                type="button"
+                className="btn-salvar"
+                onClick={() => void handleEntrar()}
+              >
+                Entrar
+              </button>
+            </div>
+            <div className="auth-footer">
+              Não tem conta?{" "}
+              <button type="button" className="auth-link" onClick={irParaCadastro}>
+                Criar conta
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <button type="button" className="auth-back" onClick={irParaLogin}>
+              ← Voltar ao login
+            </button>
+            <h2 className="auth-screen-title">Criar conta</h2>
+            <p className="auth-screen-sub">
+              Use o <strong>mesmo e-mail e senha</strong> no celular e no computador. A senha precisa
+              de pelo menos 6 caracteres.
+            </p>
+            <div className="form-group">
+              <label htmlFor="auth-email-cadastro">E-mail</label>
+              <input
+                id="auth-email-cadastro"
+                type="email"
+                autoComplete="username"
+                placeholder="seu@email.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="auth-pass-cadastro">Senha</label>
+              <input
+                id="auth-pass-cadastro"
+                type="password"
+                autoComplete="new-password"
+                placeholder="Mínimo 6 caracteres"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                onKeyDown={onPassKeyDown}
+              />
+            </div>
+            <p
+              className={`auth-msg${msgIsInfo ? " info" : ""}`}
+              aria-live="polite"
+            >
+              {authMsg}
+            </p>
+            <div className="auth-primary-wrap">
+              <button
+                type="button"
+                className="btn-salvar"
+                onClick={() => void handleCriarConta()}
+              >
+                Criar conta
+              </button>
+            </div>
+            <div className="auth-footer">
+              Já tem conta?{" "}
+              <button type="button" className="auth-link" onClick={irParaLogin}>
+                Entrar
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

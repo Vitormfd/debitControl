@@ -470,16 +470,74 @@ h1 {
   margin-bottom: 6px;
 }
 
-.auth-actions {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-top: 10px;
+.auth-msg.info {
+  color: #1565c0;
 }
 
-.auth-actions .btn-salvar {
-  flex: 1;
-  min-width: 120px;
+.auth-screen-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #3b1fa8;
+  margin-bottom: 6px;
+}
+
+.auth-screen-sub {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 20px;
+  line-height: 1.45;
+}
+
+.auth-primary-wrap {
+  margin-top: 6px;
+}
+
+.auth-primary-wrap .btn-salvar {
+  width: 100%;
+}
+
+.auth-footer {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid #eee;
+  text-align: center;
+  font-size: 13px;
+  color: #666;
+  line-height: 1.5;
+}
+
+.auth-link {
+  display: inline;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  font-weight: 700;
+  color: #3b1fa8;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.auth-link:hover {
+  color: #2d1680;
+}
+
+.auth-back {
+  display: block;
+  width: fit-content;
+  margin: 0 0 14px;
+  padding: 0;
+  background: none;
+  border: none;
+  font-size: 13px;
+  color: #888;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.auth-back:hover {
+  color: #3b1fa8;
 }
 
 .btn-secondary {
